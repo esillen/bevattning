@@ -1,1 +1,4 @@
 *.pyc
+worker/server_auth\.txt
+
+backend/db_auth\.txt

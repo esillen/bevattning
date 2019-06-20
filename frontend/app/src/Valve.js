@@ -6,7 +6,7 @@ class Valve extends React.Component {
   }
 
   switchValve(newstate) {
-    let url = "http://localhost:5000/valve/" + this.props.index + "/action";
+    let url = "http://rosenhillgarden.pythonanywhere.com/valve/" + this.props.index + "/action";
     if (newstate === true) {
       url += '/on';
     } else {
