@@ -16,8 +16,7 @@ class DatabaseHandler:
         return valves
     
     def set_valve_state(self, index, new_state):
-        cur.execute("UPDATE Valves SET State = %s WHERE Id=%s", (new_state, index))
-        mysql.get_db().commit()
+        self.cur.execute("UPDATE Valves SET State = %s WHERE Id=%s", (new_state, index))
 
     def __del__(self):
         self.cur.close()
