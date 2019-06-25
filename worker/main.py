@@ -53,9 +53,9 @@ server = ServerHandler(auth_dict["USERNAME"], auth_dict["PASSWORD"])
 def update_valve_states_from_server():
     valve_states = server.get_valve_states()
     if valve_states:
-        for valve_index in valve_states:
-            valves[valve_index].set_state(valve_states[valve_index])
-            print (valve_index, valve_states[valve_index])
+        for valve_id in valve_states:
+            valves[valve_id].set_state(valve_states[valve_id])
+            print (valve_id, valve_states[valve_id])
     else:
         print("Something bad encountered, turning off all valves")
         turn_off_all_valves()

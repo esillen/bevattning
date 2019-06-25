@@ -25,7 +25,7 @@ class ServerHandler:
         else:
             data = response.json()
             valves = data["valves"]
-            valves = dict([(item["index"], item["state"]) for item in valves]) # Returns a dict with (index, state) for the valves
+            valves = dict([(item["id"], item["state"]) for item in valves]) # Returns a dict with (id, state) for the valves
             return valves
 
 
