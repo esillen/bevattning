@@ -6,7 +6,7 @@ class Valve extends React.Component {
   }
 
   switchValve(newstate) {
-    let url = "https://rosenhillgarden.pythonanywhere.com/valve/" + this.props.id + "/action";
+    let url = "https://rosenhillgarden.pythonanywhere.com/valve/" + this.props.data.id + "/action";
     if (newstate === true) {
       url += '/on';
     } else {
@@ -16,19 +16,20 @@ class Valve extends React.Component {
     .then((_) =>
       this.props.valves.reloadValves()
     );
+    
   }
-
   
   render() {
     return (
       <div>
-        {this.props.state ? 'on' : 'off'}
+        {this.props.data.state ? 'on' : 'off'}
         <button onClick={() => this.switchValve(true)}>
           Turn On
         </button>
         <button onClick={() => this.switchValve(false)}>
           Turn Off
-        </button>
+        </button> 
+        {`Last opened: ${this.props.data.last_opened_minutes_ago} minutes and ${this.props.data.last_opened_seconds_ago} seconds ago`}
       </div>
     );
   }

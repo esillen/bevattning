@@ -49,7 +49,7 @@ class Valves extends React.Component {
           <ul>
             {valves.map(valve => (
               <li key={valve.id}>
-                <Valve id = {valve.id} state={valve.state} valves={this}/>
+                <Valve data = {valve} valves={this}/>
               </li>
             ))}
 
