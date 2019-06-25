@@ -4,8 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 import json
 import os
-
-basepath = auth_dict["WORKINGDIR"]
+from os.path import expanduser
+home = expanduser("~")
+basepath = os.path.join(home, "github", "bevattning", "backend")
 
 #################
 ## CREDENTIALS ##
