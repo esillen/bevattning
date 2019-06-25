@@ -2,7 +2,6 @@ import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM) 
 
-
 class SolenoidValve:
     def __init__(self, channel):
         self.channel = channel

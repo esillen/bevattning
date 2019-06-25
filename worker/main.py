@@ -48,7 +48,7 @@ auth_data = open(server_passwords_file, "r")
 auth_lines = auth_data.readlines()
 auth_data = [line.split("=") for line in auth_lines]
 auth_dict = dict([(item[0].strip(), item[1].strip()) for item in auth_data])
-server = ServerHandler(auth_dict["USERNAME"], auth_dict["PASSWORD"])
+server = ServerHandler(auth_dict["HOSTNAME"], auth_dict["USERNAME"], auth_dict["PASSWORD"])
 
 def update_valve_states_from_server():
     valve_states = server.get_valve_states()
@@ -72,4 +72,4 @@ for i in range(20):
 
     update_valve_states_from_server()
 
-    time.sleep(1)
+    time.sleep(10)

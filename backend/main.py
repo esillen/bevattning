@@ -4,19 +4,21 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 import json
 import os
+
+basepath = auth_dict["WORKINGDIR"]
+
 #################
 ## CREDENTIALS ##
 #################
 # The credentials file should have the following text:
 # USERNAME = <your username>
 # PASSWORD = <your password>
-db_passwords_file = "db_auth.txt"
+db_passwords_file = os.path.join(basepath, "db_auth.txt")
 auth_data = open(db_passwords_file, "r")
 auth_lines = auth_data.readlines()
 auth_data = [line.split("=") for line in auth_lines]
 auth_dict = dict([(item[0].strip(), item[1].strip()) for item in auth_data])
 
-basepath = auth_dict["WORKINGDIR"]
 frontendpath = os.path.join(basepath, "..", "frontend", "app")
 
 print (frontendpath)

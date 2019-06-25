@@ -12,7 +12,7 @@ class Valves extends React.Component {
     }
 
     componentDidMount() {
-      fetch("http://rosenhillgarden.pythonanywhere.com/valve")
+      fetch("https://rosenhillgarden.pythonanywhere.com/valve")
         //.then(res => res.json())
         .then((result) => result.json())
         .then((json) => {
