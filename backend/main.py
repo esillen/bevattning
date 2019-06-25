@@ -1,7 +1,6 @@
 from flask import Flask
-from valve import Valve
-from database_handler import DatabaseHandler
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 import json
 
 #################
@@ -17,29 +16,47 @@ auth_data = [line.split("=") for line in auth_lines]
 auth_dict = dict([(item[0].strip(), item[1].strip()) for item in auth_data])
 
 app = Flask(__name__)
-app.config['MYSQL_DATABASE_HOST'] = "rosenhillgarden.mysql.pythonanywhere-services.com"
-app.config['MYSQL_DATABASE_PORT'] = 3306
-app.config['MYSQL_DATABASE_USER'] = auth_dict["USERNAME"]
-app.config['MYSQL_DATABASE_PASSWORD'] = auth_dict["PASSWORD"]
-app.config['MYSQL_DATABASE_DB'] = 'rosenhillgarden$bevattning'
 
-db = DatabaseHandler(app)
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{hostname}/{databasename}".format(
+    username=auth_dict["USERNAME"],
+    password=auth_dict["PASSWORD"],
+    hostname=auth_dict["HOSTNAME"],
+    databasename=auth_dict["DATABASE"],
+)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
 
 CORS(app)
 
+# Yes I should be imported here (and not before) because reasons
+from valve import Valve
+
+db.create_all()
+
 @app.route('/valve')
 def valve_status():
-    valves = db.list_valves()
-    return json.dumps({'valves' : [ob.__dict__() for ob in valves]})
+    valves = Valve.query.all()
+    return json.dumps({'valves' : [ob.as_dict() for ob in valves]})
 
-@app.route('/valve/<index>/action/<action>')
-def valve_action(index,action):
-    if action == "on":
-        db.set_valve_state(index, True)
-        return "Changed to on"
-    elif action == "off":
-        db.set_valve_state(index, False)
-        return "Changed to off"
+@app.route('/valve/<id>/action/<action>')
+def valve_action(id, action):
+    valve = Valve.query.filter_by(id=id).first()
+    print(valve)
+    if valve == None:
+        "valve index out of range"
     else:
-        return "Bug error crash fail"
+        if action == "on":
+            valve.state = True
+            db.session.commit()
+            return "Changed to on"
+        elif action == "off":
+            valve.state = False
+            db.session.commit()
+            return "Changed to off"
+        else:
+            return "bad action"
 
