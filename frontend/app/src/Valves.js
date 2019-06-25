@@ -43,8 +43,8 @@ class Valves extends React.Component {
         return (
           <ul>
             {valves.map(valve => (
-              <li key={valve.index}>
-                <Valve index = {valve.index} state={valve.state}/>
+              <li key={valve.id}>
+                <Valve id = {valve.id} state={valve.state}/>
               </li>
             ))}
 
