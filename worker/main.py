@@ -68,8 +68,11 @@ def turn_off_all_valves():
 ###########
 ## LOGIC ##
 ###########
-for i in range(20):
+while True:
 
     update_valve_states_from_server()
 
     time.sleep(10)
+
+
+GPIO.cleanup()
