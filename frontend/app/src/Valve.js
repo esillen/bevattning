@@ -13,6 +13,7 @@ class Valve extends React.Component {
       url += '/off';
     }
     fetch(url);
+    this.props.valves.reloadValves();
   }
 
   

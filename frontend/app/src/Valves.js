@@ -12,25 +12,30 @@ class Valves extends React.Component {
     }
 
     componentDidMount() {
+      this.reloadValves();
+    }
+
+    reloadValves() {
       fetch("https://rosenhillgarden.pythonanywhere.com/valve")
-        //.then(res => res.json())
-        .then((result) => result.json())
-        .then((json) => {
-            this.setState({
-              isLoaded: true,
-              valves: json.valves
-            });
-          },
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error
-            });
-          }
-        )
+      //.then(res => res.json())
+      .then((result) => result.json())
+      .then((json) => {
+          this.setState({
+            isLoaded: true,
+            valves: json.valves
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error: error
+          });
+        }
+      )
+
     }
 
     render() {
@@ -44,7 +49,7 @@ class Valves extends React.Component {
           <ul>
             {valves.map(valve => (
               <li key={valve.id}>
-                <Valve id = {valve.id} state={valve.state}/>
+                <Valve id = {valve.id} state={valve.state} valves={this}/>
               </li>
             ))}
 
