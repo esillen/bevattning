@@ -1,8 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 import json
-
+import os
 #################
 ## CREDENTIALS ##
 #################
@@ -15,7 +16,11 @@ auth_lines = auth_data.readlines()
 auth_data = [line.split("=") for line in auth_lines]
 auth_dict = dict([(item[0].strip(), item[1].strip()) for item in auth_data])
 
-app = Flask(__name__)
+basepath = auth_dict["WORKINGDIR"]
+frontendpath = os.path.join(basepath, "..", "frontend", "app")
+
+print (frontendpath)
+app = Flask(__name__, static_folder=os.path.join(frontendpath, "build", "static"), template_folder=os.path.join(frontendpath, "build"))
 
 SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{hostname}/{databasename}".format(
     username=auth_dict["USERNAME"],
@@ -37,6 +42,10 @@ from valve import Valve
 
 db.create_all()
 
+@app.route("/")
+def index():
+    return render_template('index.html')
+
 @app.route('/valve')
 def valve_status():
     valves = Valve.query.all()
@@ -51,6 +60,7 @@ def valve_action(id, action):
     else:
         if action == "on":
             valve.state = True
+            valve.last_opened = datetime.datetime.utcnow()
             db.session.commit()
             return "Changed to on"
         elif action == "off":
