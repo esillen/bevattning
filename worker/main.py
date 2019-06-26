@@ -73,7 +73,12 @@ def turn_off_all_valves():
         valve.set_state(False)
 
 def poll_mi_flora_data():
-    return plant_sensor.poll()
+    data = None
+    try:
+        data = plant_sensor.poll()
+    except: # happens if the sensor is out of reach
+        print ("issue with mi flower. Could be out of reach!")
+    return data
 
 def update_mi_flora_data_on_server(mi_flora_data):
     server.update_mi_flora_data(mi_flora_data)
@@ -88,6 +93,8 @@ while True:
     mi_flora_data = poll_mi_flora_data()
 
     update_mi_flora_data_on_server(mi_flora_data)
+
+    print ("Update at {}".format(time.time))
 
     time.sleep(10)
 
