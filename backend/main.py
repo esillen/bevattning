@@ -73,6 +73,7 @@ def valve_action(id, action):
             return "Changed to on"
         elif action == "off":
             valve.state = False
+            valve.last_closed = datetime.datetime.utcnow()
             db.session.commit()
             return "Changed to off"
         else:
