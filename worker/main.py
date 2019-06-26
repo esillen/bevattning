@@ -96,7 +96,7 @@ while True:
     mi_flora_data = poll_mi_flora_data()
     update_mi_flora_data_on_server(mi_flora_data)
 
-    time_to_sleep = update_interval - (time.time() - last_update_time)
+    time_to_sleep = max(update_interval - (time.time() - last_update_time), 0)
     print ("Updated at {}, sleeping for {}".format(time.time(), time_to_sleep))
     time.sleep(time_to_sleep)
 
