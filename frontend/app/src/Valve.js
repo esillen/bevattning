@@ -20,16 +20,29 @@ class Valve extends React.Component {
   }
   
   render() {
-    return (
-      <div>
-        {this.props.data.state ? 'on' : 'off'}
-        <button onClick={() => this.switchValve(true)}>
-          Turn On
-        </button>
+    let content;
+
+    if (this.props.data.state) {
+      content = <div>
+        On
         <button onClick={() => this.switchValve(false)}>
           Turn Off
         </button> 
-        {`Last opened: ${this.props.data.last_opened_minutes_ago} minutes and ${this.props.data.last_opened_seconds_ago} seconds ago`}
+        {`Last opened ${this.props.data.last_opened_minutes_ago} minutes and ${this.props.data.last_opened_seconds_ago} seconds ago`}
+      </div>
+    } else {
+      content = <div>
+        Off
+        <button onClick={() => this.switchValve(true)}>
+          Turn On
+        </button> 
+        {`Last closed ${this.props.data.last_closed_minutes_ago} minutes and ${this.props.data.last_closed_seconds_ago} seconds ago`}
+      </div>
+    }
+
+    return (
+      <div>
+        {content}
       </div>
     );
   }

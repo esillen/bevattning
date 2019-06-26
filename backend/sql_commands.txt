@@ -1,0 +1,10 @@
+#Drop table:
+
+DROP TABLE Valves;
+
+#Remake table: just run the flask backend.
+
+#Remake columns;
+
+INSERT INTO Valves (state, last_opened, last_closed)
+VALUES (false, UTC_TIMESTAMP(), UTC_TIMESTAMP());
