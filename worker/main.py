@@ -86,17 +86,19 @@ def update_mi_flora_data_on_server(mi_flora_data):
 ###########
 ## LOGIC ##
 ###########
+update_interval = 10
 while True:
+
+    last_update_time = time.time()
 
     update_valve_states_from_server()
 
     mi_flora_data = poll_mi_flora_data()
-
     update_mi_flora_data_on_server(mi_flora_data)
 
-    print ("Update at {}".format(time.time))
-
-    time.sleep(10)
+    time_to_sleep = update_interval - (time.time() - last_update_time)
+    print ("Update at {}, sleeping for {}".format(time.time(), time_to_sleep))
+    time.sleep(time_to_sleep)
 
 
 GPIO.cleanup()
