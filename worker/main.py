@@ -1,9 +1,11 @@
 import RPi.GPIO as GPIO
 from flow_measurer import FlowMeasurer
+from plant_sensor import PlantSensor
 from solenoid_valve import SolenoidValve
 from server_handler import ServerHandler
 from threading import Timer
 import time
+import json
 
 GPIO.setmode(GPIO.BCM) 
 
@@ -14,6 +16,7 @@ GPIO.setmode(GPIO.BCM)
 # USERNAME = <your username>
 # PASSWORD = <your password>
 server_passwords_file = "server_auth.txt"
+mi_flora_mac_address_file = "plant_sensor_mac.txt"
 
 ################
 ## GPIO SETUP ##
@@ -40,6 +43,12 @@ solenoid_valve_4 = SolenoidValve(SOLENOID_VALVE_4_CHANNEL)
 flow_measurers = {1:flow_measurer_1, 2:flow_measurer_2}
 valves = {1:solenoid_valve_1, 2:solenoid_valve_2, 3:solenoid_valve_3, 4:solenoid_valve_4}
 
+mi_flora_mac_file = open("plant_sensor_mac.txt", 'r')
+mi_flora_mac_address = mi_flora_mac_file.readline().strip()
+mi_flora_mac_file.close()
+
+plant_sensor = PlantSensor(mi_flora_mac_address)
+
 #################
 ## SERVER INIT ##
 #################
@@ -64,6 +73,11 @@ def turn_off_all_valves():
     for valve in valves.values():
         valve.set_state(False)
 
+def poll_mi_flora_data():
+    return plant_sensor.poll()
+
+def update_mi_flora_data_on_server(mi_flora_data):
+    server.update_mi_flora_data(mi_flora_data)
 
 ###########
 ## LOGIC ##
@@ -71,6 +85,12 @@ def turn_off_all_valves():
 while True:
 
     update_valve_states_from_server()
+
+    mi_flora_data = poll_mi_flora_data()
+
+    print (mi_flora_data)
+
+    update_mi_flora_data_on_server(mi_flora_data)
 
     time.sleep(10)
 

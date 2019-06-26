@@ -7,4 +7,7 @@ DROP TABLE Valves;
 #Remake columns;
 
 INSERT INTO Valves (state, last_opened, last_closed)
-VALUES (false, UTC_TIMESTAMP(), UTC_TIMESTAMP());
+VALUES (false, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(false, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(false, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(false, UTC_TIMESTAMP(), UTC_TIMESTAMP());

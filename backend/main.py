@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import datetime
@@ -7,6 +7,8 @@ import os
 from os.path import expanduser
 home = expanduser("~")
 basepath = os.path.join(home, "github", "bevattning", "backend")
+
+MAX_MI_FLORA_DATAPOINTS = 10
 
 #################
 ## CREDENTIALS ##
@@ -22,7 +24,6 @@ auth_dict = dict([(item[0].strip(), item[1].strip()) for item in auth_data])
 
 frontendpath = os.path.join(basepath, "..", "frontend", "app")
 
-print (frontendpath)
 app = Flask(__name__, static_folder=os.path.join(frontendpath, "build", "static"), template_folder=os.path.join(frontendpath, "build"))
 
 SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{hostname}/{databasename}".format(
@@ -42,7 +43,12 @@ CORS(app)
 
 # Yes I should be imported here (and not before) because reasons
 from valve import Valve
+from mi_flora_datapoint import MiFloraDatapoint
 
+try:
+    MiFloraDatapoint.__table__.drop(db.engine) # Begin by dropping the table, we'll recreate it in the next step
+except:
+    print ("mi flora datpoints table doesn't exist")
 db.create_all()
 
 @app.route("/")
@@ -57,7 +63,6 @@ def valve_status():
 @app.route('/valve/<id>/action/<action>')
 def valve_action(id, action):
     valve = Valve.query.filter_by(id=id).first()
-    print(valve)
     if valve == None:
         "valve index out of range"
     else:
@@ -73,3 +78,17 @@ def valve_action(id, action):
         else:
             return "bad action"
 
+@app.route('/miflora', methods=['GET', 'POST'])
+def miflora():
+    if request.method == 'POST':
+        mi_flora_datapoint = MiFloraDatapoint(jsonBlob = json.dumps(request.json))
+        db.session.add(mi_flora_datapoint)
+        db.session.commit()
+        datapoints = MiFloraDatapoint.query
+        if datapoints.count() > MAX_MI_FLORA_DATAPOINTS:
+            db.session.delete(datapoints[0])
+            db.session.commit()
+        return "ok"
+    elif request.method == 'GET':
+        mi_flora_datapoints = MiFloraDatapoint.query.all()
+        return json.dumps([json.loads(ob.jsonBlob) for ob in mi_flora_datapoints]) 
