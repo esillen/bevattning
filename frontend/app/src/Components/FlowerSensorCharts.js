@@ -51,32 +51,32 @@ reloadCharts() {
           <div>
           <LineChart width={600} height={300} data={data}>
             <Line type="monotone" dataKey="temperature" stroke="#FF6347" />
-            <CartesianGrid stroke="#ccc" />
-            <XAxis />
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis interval={9}/>
             <YAxis />
             <Legend />
             <Tooltip />
           </LineChart>
           <LineChart width={600} height={300} data={data}>
           <Line type="monotone" dataKey="light" stroke="#FFFF00" />
-            <CartesianGrid stroke="#ccc" />
-            <XAxis />
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis interval={9}/>
             <YAxis />
             <Legend />
             <Tooltip />
           </LineChart>
           <LineChart width={600} height={300} data={data}>
             <Line type="monotone" dataKey="moisture" stroke="#FF6347" />
-            <CartesianGrid stroke="#ccc" />
-            <XAxis />
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis interval={9}/>
             <YAxis />
             <Legend />
             <Tooltip />
           </LineChart>
           <LineChart width={600} height={300} data={data}>
             <Line type="monotone" dataKey="battery" stroke="#ADFF2F" />
-            <CartesianGrid stroke="#ccc" />
-            <XAxis />
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis interval={9}/>
             <YAxis />
             <Legend />
             <Tooltip />

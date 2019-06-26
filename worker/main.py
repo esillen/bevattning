@@ -97,7 +97,7 @@ while True:
     update_mi_flora_data_on_server(mi_flora_data)
 
     time_to_sleep = update_interval - (time.time() - last_update_time)
-    print ("Update at {}, sleeping for {}".format(time.time(), time_to_sleep))
+    print ("Updated at {}, sleeping for {}".format(time.time(), time_to_sleep))
     time.sleep(time_to_sleep)
 
 
