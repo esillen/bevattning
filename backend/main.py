@@ -8,7 +8,7 @@ from os.path import expanduser
 home = expanduser("~")
 basepath = os.path.join(home, "github", "bevattning", "backend")
 
-MAX_MI_FLORA_DATAPOINTS = 10
+MAX_MI_FLORA_DATAPOINTS = 60
 
 #################
 ## CREDENTIALS ##
