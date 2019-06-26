@@ -2,8 +2,9 @@ import React from 'react';
 import logo from './logo.svg';
 import watering from './watering.gif';
 import './App.css';
-import Valves from './Valves.js';
-import RandomImage from './RandomImage.js'
+import Valves from './Components/Valves.js';
+import RandomImage from './Components/RandomImage.js'
+import FlowerSensorCharts from './Components/FlowerSensorCharts'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <img src={watering} class="App-watering"/>
         <Valves />
         <RandomImage />
+        <FlowerSensorCharts />
         
       </header>
     </div>

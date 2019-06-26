@@ -25,7 +25,6 @@ class Valve(db.Model):
                 to_return[c.name] = getattr(self, c.name)
         # Add minutes and seconds ago the valve was opened
         last_opened_seconds_diff = (datetime.datetime.utcnow() - self.last_opened).seconds
-        print (datetime.datetime.utcnow(), self.last_opened)
         to_return["last_opened_minutes_ago"] = int(last_opened_seconds_diff / 60)
         to_return["last_opened_seconds_ago"] = int(last_opened_seconds_diff % 60)
         # Add minutes and seconds ago the valve was closed

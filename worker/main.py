@@ -64,7 +64,6 @@ def update_valve_states_from_server():
     if valve_states:
         for valve_id in valve_states:
             valves[valve_id].set_state(valve_states[valve_id])
-            print (valve_id, valve_states[valve_id])
     else:
         print("Something bad encountered, turning off all valves")
         turn_off_all_valves()
@@ -87,8 +86,6 @@ while True:
     update_valve_states_from_server()
 
     mi_flora_data = poll_mi_flora_data()
-
-    print (mi_flora_data)
 
     update_mi_flora_data_on_server(mi_flora_data)
 
