@@ -44,12 +44,21 @@ CORS(app)
 # Yes I should be imported here (and not before) because reasons
 from valve import Valve
 from mi_flora_datapoint import MiFloraDatapoint
+from health import Health
 
 try:
     MiFloraDatapoint.__table__.drop(db.engine) # Begin by dropping the table, we'll recreate it in the next step
 except:
     print ("mi flora datpoints table doesn't exist")
+try:
+    Health.__table__.drop(db.engine)
+except:
+    print ("health  table doesn't exist")
+
 db.create_all()
+health = Health(last_access = datetime.datetime.utcnow())# Create the first (and only) entry
+db.session.add(health)
+db.session.commit()
 
 @app.route("/")
 def index():
@@ -93,3 +102,14 @@ def miflora():
     elif request.method == 'GET':
         mi_flora_datapoints = MiFloraDatapoint.query.all()
         return json.dumps([json.loads(ob.jsonBlob) for ob in mi_flora_datapoints]) 
+
+@app.route('/health', methods=['GET', 'POST'])
+def health():
+    if request.method == 'POST':
+        health = Health.query.first()
+        health.last_access = datetime.datetime.utcnow()
+        db.session.commit()
+        return 'ok'
+    elif request.method == 'GET':
+        health = Health.query.first()
+        return json.dumps(health.as_dict())
