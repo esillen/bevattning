@@ -14,6 +14,6 @@ class SolenoidValve:
     def set_state(self, new_state):
         self.state = new_state
         if self.state:
-            GPIO.output(self.channel, GPIO.HIGH)
+            GPIO.output(self.channel, GPIO.LOW) # Other way around for some reason.
         else:
-            GPIO.output(self.channel, GPIO.LOW)
+            GPIO.output(self.channel, GPIO.HIGH) # Other way around for some reason
