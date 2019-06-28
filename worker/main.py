@@ -102,6 +102,7 @@ def update_mi_flora_data_on_server(mi_flora_data):
 ## LOGIC ##
 ###########
 update_interval = 10
+plant_sensor.start()
 while True:
 
     last_update_time = time.time()
@@ -114,7 +115,7 @@ while True:
     else:
         update_valve_states_from_server()
 
-    mi_flora_data = poll_mi_flora_data()
+    mi_flora_data = plant_sensor.get_latest_data_point_dict()
     update_mi_flora_data_on_server(mi_flora_data)
 
     time_to_sleep = max(update_interval - (time.time() - last_update_time), 0)
