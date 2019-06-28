@@ -4,6 +4,7 @@ from plant_sensor import PlantSensor
 from solenoid_valve import SolenoidValve
 from server_handler import ServerHandler
 from threading import Timer
+from manual_override import ManualOverride
 import time
 import json
 
@@ -29,6 +30,9 @@ SOLENOID_VALVE_2_CHANNEL = 14
 SOLENOID_VALVE_3_CHANNEL = 15
 SOLENOID_VALVE_4_CHANNEL = 18
 
+MANUAL_OVERRIDE_MASTER_SWITCH_CHANNEL = 17
+MANUAL_OVERRIDE_SWITCH_CHANNELS = {1:27, 2:22, 3:23, 4:24}
+
 ###################
 ## HARDWARE INIT ##
 ###################
@@ -49,6 +53,8 @@ mi_flora_mac_file.close()
 
 plant_sensor = PlantSensor(mi_flora_mac_address)
 
+manual_override = ManualOverride(MANUAL_OVERRIDE_MASTER_SWITCH_CHANNEL, MANUAL_OVERRIDE_SWITCH_CHANNELS)
+
 #################
 ## SERVER INIT ##
 #################
@@ -59,6 +65,10 @@ auth_data = [line.split("=") for line in auth_lines]
 auth_dict = dict([(item[0].strip(), item[1].strip()) for item in auth_data])
 server = ServerHandler(auth_dict["HOSTNAME"], auth_dict["USERNAME"], auth_dict["PASSWORD"])
 
+#############
+## METHODS ##
+#############
+
 def update_valve_states_from_server():
     valve_states = server.get_valve_states()
     if valve_states:
@@ -67,6 +77,11 @@ def update_valve_states_from_server():
     else:
         print("Something bad encountered, turning off all valves")
         turn_off_all_valves()
+
+def update_valve_states_from_manual_override():
+    valve_states = manual_override.get_channel_states()
+    for valve_id in valve_states:
+        valves[valve_id].set_state(valve_states[valve_id])
 
 def turn_off_all_valves():
     for valve in valves.values():
@@ -90,8 +105,14 @@ update_interval = 10
 while True:
 
     last_update_time = time.time()
+    
+    # Tells the server that I'm fine
+    server.send_healthcheck()
 
-    update_valve_states_from_server()
+    if manual_override.should_override():
+        update_valve_states_from_manual_override()
+    else:
+        update_valve_states_from_server()
 
     mi_flora_data = poll_mi_flora_data()
     update_mi_flora_data_on_server(mi_flora_data)

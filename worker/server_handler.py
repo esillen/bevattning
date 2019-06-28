@@ -3,6 +3,7 @@ import json
 
 VALVES = "/valve"
 MIFLORA = "/miflora"
+HEALTH = "/health"
 
 class ServerHandler:
     def __init__(self, host, username, password):
@@ -35,7 +36,15 @@ class ServerHandler:
         try:
             response = self.session.post(self.host + MIFLORA, json = data)
             if response.status_code != 200:
-                print ("WARNING WARNING COULD NOT SEND DATA TO SERVER")
+                print ("WARNING WARNING COULD NOT SEND DATA TO SERVER, BAD RESPONSE CODE FROM SERVER!")
         except:
-            print ("WARNING WARNING COULD NOT SEND DATA TO SERVER")
+            print ("WARNING WARNING COULD NOT SEND MIFLORA DATA TO SERVER, CLIENT SIDE ERROR")
+
+    def send_healthcheck(self):
+        try:
+            response = self.session.get(self.host + HEALTH)
+            if response.status_code != 200:
+                print ("WARNING WARNING COULD NOT SEND DATA TO SERVER, BAD RESPONSE CODE FROM SERVER!")
+        except:
+            print ("WARNING WARNING COULD NOT GET /HEALTHCHECK, CLIENT SIDE ERROR")
 

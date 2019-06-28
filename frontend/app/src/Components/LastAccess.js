@@ -45,7 +45,7 @@ class LastAccess extends React.Component {
         return <div>Loading health...</div>;
       } else {
         return (
-          <div>System last heartbeat {`${health.last_access_minutes} minutes and ${health.last_access_seconds} ago.`}</div>
+          <div>System last heartbeat {`${health.last_access_minutes} minutes and ${health.last_access_seconds} seconds ago.`}</div>
         );
       }
     }
