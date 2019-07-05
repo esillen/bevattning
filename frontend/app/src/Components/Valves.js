@@ -7,7 +7,8 @@ class Valves extends React.Component {
         this.state = {
           error: null,
           isLoaded: false,
-          valves: null
+          valves: null,
+          password: ''
         };
     }
 
@@ -35,7 +36,10 @@ class Valves extends React.Component {
           });
         }
       )
+    }
 
+    updatePassword(password) {
+      this.setState({password: password});
     }
 
     render() {
@@ -47,9 +51,13 @@ class Valves extends React.Component {
       } else {
         return (
           <ul>
+            <li>
+              Password: 
+              <input value={this.state.password} onChange={evt => this.updatePassword(evt.target.value)}/>
+            </li>
             {valves.map(valve => (
               <li key={valve.id}>
-                <Valve data = {valve} valves={this}/>
+                <Valve data = {valve} valves={this} password = {this.state.password}/>
               </li>
             ))}
 

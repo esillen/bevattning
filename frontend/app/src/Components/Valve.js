@@ -6,13 +6,21 @@ class Valve extends React.Component {
   }
 
   switchValve(newstate) {
-    let url = "https://rosenhillgarden.pythonanywhere.com/valve/" + this.props.data.id + "/action";
+    const url = "https://rosenhillgarden.pythonanywhere.com/valve/" + this.props.data.id;
+    const data = {password: this.props.password};
     if (newstate === true) {
-      url += '/on';
+      data.action = 'on';
     } else {
-      url += '/off';
+      data.action = 'off';
     }
-    fetch(url)
+    fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify(data)
+    })
     .then((_) =>
       this.props.valves.reloadValves()
     );

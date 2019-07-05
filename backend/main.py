@@ -45,6 +45,7 @@ CORS(app)
 from valve import Valve
 from mi_flora_datapoint import MiFloraDatapoint
 from health import Health
+from settings import Settings
 
 try:
     MiFloraDatapoint.__table__.drop(db.engine) # Begin by dropping the table, we'll recreate it in the next step
@@ -69,24 +70,31 @@ def valve_status():
     valves = Valve.query.all()
     return json.dumps({'valves' : [ob.as_dict() for ob in valves]})
 
-@app.route('/valve/<id>/action/<action>')
-def valve_action(id, action):
-    valve = Valve.query.filter_by(id=id).first()
-    if valve == None:
-        "valve index out of range"
-    else:
-        if action == "on":
-            valve.state = True
-            valve.last_opened = datetime.datetime.utcnow()
-            db.session.commit()
-            return "Changed to on"
-        elif action == "off":
-            valve.state = False
-            valve.last_closed = datetime.datetime.utcnow()
-            db.session.commit()
-            return "Changed to off"
+@app.route('/valve/<id>', methods=['POST'])
+def valve_action(id):
+    password = request.json['password']
+    server_password = Settings.query.filter_by(key="password").first().value
+    if password == server_password:
+        valve = Valve.query.filter_by(id=id).first()
+        action = request.json['action']
+        if valve == None:
+            "valve index out of range"
         else:
-            return "bad action"
+            if action == "on":
+                valve.state = True
+                valve.last_opened = datetime.datetime.utcnow()
+                db.session.commit()
+                return "Changed to on"
+            elif action == "off":
+                valve.state = False
+                valve.last_closed = datetime.datetime.utcnow()
+                db.session.commit()
+                return "Changed to off"
+            else:
+                return "bad action"
+    else:
+        return "bad password", 401 #sure I'll fix a better response code once I know this works
+
 
 @app.route('/miflora', methods=['GET', 'POST'])
 def miflora():
