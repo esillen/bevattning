@@ -103,24 +103,26 @@ def update_mi_flora_data_on_server(mi_flora_data):
 ###########
 update_interval = 10
 plant_sensor.start()
-while True:
+try:
+    while True:
 
-    last_update_time = time.time()
-    
-    # Tells the server that I'm fine
-    server.send_healthcheck()
+        last_update_time = time.time()
+        
+        # Tells the server that I'm fine
+        server.send_healthcheck()
 
-    if manual_override.should_override():
-        update_valve_states_from_manual_override()
-    else:
-        update_valve_states_from_server()
+        if manual_override.should_override():
+            update_valve_states_from_manual_override()
+        else:
+            update_valve_states_from_server()
 
-    mi_flora_data = plant_sensor.get_latest_data_point_dict()
-    update_mi_flora_data_on_server(mi_flora_data)
+        mi_flora_data = plant_sensor.get_latest_data_point_dict()
+        update_mi_flora_data_on_server(mi_flora_data)
 
-    time_to_sleep = max(update_interval - (time.time() - last_update_time), 0)
-    print ("Updated at {}, sleeping for {}".format(time.time(), time_to_sleep))
-    time.sleep(time_to_sleep)
-
+        time_to_sleep = max(update_interval - (time.time() - last_update_time), 0)
+        print ("Updated at {}, sleeping for {}".format(time.time(), time_to_sleep))
+        time.sleep(time_to_sleep)
+except KeyboardInterrupt:
+    self.plant_sensor.should_run = False
 
 GPIO.cleanup()

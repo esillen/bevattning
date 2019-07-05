@@ -31,19 +31,20 @@ class PlantSensor(threading.Thread):
         self.mac_address = mac_address
         self.datapoint = PlantSensorDatapoint()
         self.poll_time = poll_time
+        self.should_run = True
         self.lock = threading.Lock()
 
     def get_latest_data_point_dict(self):
         self.lock.acquire()
         data = self.datapoint.as_dict()
         self.lock.release()
-        return 
+        return data
 
     def run(self):
-        while True:
+        while self.should_run:
             last_time = time.time()
             try:
-                poll()
+                self.poll()
             except:
                 print('Could not poll mi flora. is it to far away?')
             time.sleep(max(0, self.poll_time - (time.time() - last_time)))
