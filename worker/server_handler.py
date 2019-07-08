@@ -42,7 +42,7 @@ class ServerHandler:
 
     def send_healthcheck(self):
         try:
-            response = self.session.get(self.host + HEALTH)
+            response = self.session.post(self.host + HEALTH)
             if response.status_code != 200:
                 print ("WARNING WARNING COULD NOT SEND DATA TO SERVER, BAD RESPONSE CODE FROM SERVER!")
         except:

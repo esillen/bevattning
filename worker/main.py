@@ -123,6 +123,6 @@ try:
         print ("Updated at {}, sleeping for {}".format(time.time(), time_to_sleep))
         time.sleep(time_to_sleep)
 except KeyboardInterrupt:
-    self.plant_sensor.should_run = False
+    plant_sensor.should_run = False
 
 GPIO.cleanup()

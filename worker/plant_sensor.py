@@ -35,9 +35,12 @@ class PlantSensor(threading.Thread):
         self.lock = threading.Lock()
 
     def get_latest_data_point_dict(self):
+        data = {}
         self.lock.acquire()
-        data = self.datapoint.as_dict()
-        self.lock.release()
+        try:
+            data = self.datapoint.as_dict()
+        finally:
+            self.lock.release()
         return data
 
     def run(self):
@@ -54,10 +57,12 @@ class PlantSensor(threading.Thread):
         poller = MiFloraPoller(self.mac_address, BluepyBackend)
 
         self.lock.acquire()
-        self.datapoint.temperature = poller.parameter_value(MI_TEMPERATURE)
-        self.datapoint.moisture = poller.parameter_value(MI_MOISTURE)
-        self.datapoint.light = poller.parameter_value(MI_LIGHT)
-        #to_return["Conductivity"] = poller.parameter_value(MI_CONDUCTIVITY)
-        self.datapoint.battery = poller.parameter_value(MI_BATTERY)
-        self.datapoint.timestamp = datetime.datetime.utcnow()
-        self.lock.release()
+        try:
+            self.datapoint.temperature = poller.parameter_value(MI_TEMPERATURE)
+            self.datapoint.moisture = poller.parameter_value(MI_MOISTURE)
+            self.datapoint.light = poller.parameter_value(MI_LIGHT)
+            #to_return["Conductivity"] = poller.parameter_value(MI_CONDUCTIVITY)
+            self.datapoint.battery = poller.parameter_value(MI_BATTERY)
+            self.datapoint.timestamp = datetime.datetime.utcnow()
+        finally:
+            self.lock.release()
