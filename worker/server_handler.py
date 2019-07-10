@@ -1,6 +1,8 @@
 import requests
 import json
 
+GENERAL_TIMEOUT = 10
+
 VALVES = "/valve"
 MIFLORA = "/miflora"
 HEALTH = "/health"
@@ -14,7 +16,7 @@ class ServerHandler:
     def get_valve_states(self):
         response = None
         try:
-            response = self.session.get(self.host + VALVES, timeout = 10)
+            response = self.session.get(self.host + VALVES, timeout = GENERAL_TIMEOUT)
         except:
             print ("WARNING WARNING COULD NOT READ FROM SERVER! CLIENT SIDE ERROR! VERY UNCOMFORTABLE")
             return False
@@ -34,7 +36,7 @@ class ServerHandler:
     def update_mi_flora_data(self, data):
         response = None
         try:
-            response = self.session.post(self.host + MIFLORA, json = data)
+            response = self.session.post(self.host + MIFLORA, json = data, timeout = GENERAL_TIMEOUT)
             if response.status_code != 200:
                 print ("WARNING WARNING COULD NOT SEND DATA TO SERVER, BAD RESPONSE CODE FROM SERVER!")
         except:
@@ -42,7 +44,7 @@ class ServerHandler:
 
     def send_healthcheck(self):
         try:
-            response = self.session.post(self.host + HEALTH)
+            response = self.session.post(self.host + HEALTH, timeout = GENERAL_TIMEOUT)
             if response.status_code != 200:
                 print ("WARNING WARNING COULD NOT SEND DATA TO SERVER, BAD RESPONSE CODE FROM SERVER!")
         except:
