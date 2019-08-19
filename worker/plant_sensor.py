@@ -55,14 +55,15 @@ class PlantSensor(threading.Thread):
     def poll(self):
         # This is slow but seems to work
         poller = MiFloraPoller(self.mac_address, BluepyBackend)
+        poller.fill_cache()
 
         self.lock.acquire()
         try:
-            self.datapoint.temperature = poller.parameter_value(MI_TEMPERATURE)
-            self.datapoint.moisture = poller.parameter_value(MI_MOISTURE)
-            self.datapoint.light = poller.parameter_value(MI_LIGHT)
+            self.datapoint.temperature = poller.parameter_value(MI_TEMPERATURE, read_cache=True)
+            self.datapoint.moisture = poller.parameter_value(MI_MOISTURE, read_cache=True)
+            self.datapoint.light = poller.parameter_value(MI_LIGHT, read_cache=True)
             #to_return["Conductivity"] = poller.parameter_value(MI_CONDUCTIVITY)
-            self.datapoint.battery = poller.parameter_value(MI_BATTERY)
+            self.datapoint.battery = poller.parameter_value(MI_BATTERY, read_cache=True)
             self.datapoint.timestamp = datetime.datetime.utcnow()
         finally:
             self.lock.release()
