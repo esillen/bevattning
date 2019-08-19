@@ -26,11 +26,11 @@ class PlantSensorDatapoint:
 # yes there are race conditions but whatevz
 class PlantSensor(threading.Thread):
 
-    def __init__(self, mac_address, poll_time = 10):
+    def __init__(self, mac_address, poll_interval = 60):
         threading.Thread.__init__(self)
         self.mac_address = mac_address
         self.datapoint = PlantSensorDatapoint()
-        self.poll_time = poll_time
+        self.poll_interval = poll_interval
         self.should_run = True
         self.lock = threading.Lock()
 
@@ -50,7 +50,7 @@ class PlantSensor(threading.Thread):
                 self.poll()
             except:
                 print('Could not poll mi flora. is it to far away?')
-            time.sleep(max(0, self.poll_time - (time.time() - last_time)))
+            time.sleep(max(1, self.poll_interval - (time.time() - last_time)))
 
     def poll(self):
         # This is slow but seems to work

@@ -8,7 +8,9 @@ from os.path import expanduser
 home = expanduser("~")
 basepath = os.path.join(home, "github", "bevattning", "backend")
 
-MAX_MI_FLORA_DATAPOINTS = 60
+DATA_UPLOAD_INTERVAL_SECONDS = 60 * 5 # The worker data update frequency
+SAVED_HISTORY_SECONDS = 60 * 60 * 12 # Save 12h history
+MAX_MI_FLORA_DATAPOINTS = SAVED_HISTORY_SECONDS / DATA_UPLOAD_INTERVAL_SECONDS # Save this many datapoints
 
 #################
 ## CREDENTIALS ##
